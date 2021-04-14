@@ -2,8 +2,6 @@ class BlogsController < ApplicationController
   before_action :set_blog, only: [:show, :edit, :update, :destroy]
   def index
     @blogs = Blog.all
-    title1 = @blogs[0].title
-    content1 = @blogs[0].content
   end
   def new
     @blog = Blog.new
@@ -27,7 +25,6 @@ class BlogsController < ApplicationController
     @blog = Blog.find(params[:id])
   end
   def update
-    @blog= Blog.find(params[:id])
     if @blog.update(blog_params)
       redirect_to blogs_path, notice: "ブログを編集しました！"
     else
@@ -38,6 +35,11 @@ class BlogsController < ApplicationController
     @blog.destroy
     redirect_to blogs_path, notice:"ブログを削除しました！"
   end
+  def confirm
+    @blog = Blog.new(blog_params)
+    render :new if @blog.invalid?
+  end
+end
   private
   def blog_params
     params.require(:blog).permit(:title, :content)
@@ -45,8 +47,3 @@ class BlogsController < ApplicationController
   def set_blog
     @blog = Blog.find(params[:id])
   end
-  def confirm
-    @blog = Blog.new(blog_params)
-    render :new if @blog.invalid?
-  end
-end
